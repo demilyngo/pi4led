@@ -1,42 +1,22 @@
 package com.rapberry.pi4led.controller;
 
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class LedController {
+    final MessageController messageController = new MessageController();
+    GpioController gpioController = GpioFactory.getInstance();
 
-    private static GpioPinDigitalOutput pin;
-
+    Integer msg = 13;
     @RequestMapping("/")
-    public String greeting() {
-        return "Hello world!";
-    }
-    @RequestMapping("/light")
-    public String light() {
-        if (pin == null) {
-            GpioController gpio = GpioFactory.getInstance();
-            pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "FirstLed", PinState.LOW);
-        }
-        pin.toggle();
-        return "OK";
-    }
+    public String greeting() throws InterruptedException {
+        messageController.sendMessage(0);
+        messageController.sendMessage(msg);
+        return Integer.toBinaryString(msg);
 
-//    private static GpioPinDigitalOutput pin;
-//
-//    @RequestMapping("/")
-//    public String greeting() {
-//        return "Hello world!";
-//    }
-//
-//    @RequestMapping("/light")
-//    public String light() {
-//
-//        if (pin == null) {
-//            GpioController gpio = GpioFactory.getInstance();
-//            pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW);
-//        }
-//
-//        pin.toggle();
-//        return "OK";
-//    }
+    }
 }

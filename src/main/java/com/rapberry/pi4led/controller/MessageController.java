@@ -1,60 +1,35 @@
-//package com.rapberry.pi4led.controller;
-//
-//import com.pi4j.io.gpio.*;
-//import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-//import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-//
-//public class MessageController {
-//
-//    private final GpioController gpioController = GpioFactory.getInstance();
-//    private final GpioPinDigitalOutput gpioPinDigitalOutput = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, "OutputSignal", PinState.LOW);
-//    private final GpioPinDigitalInput gpioPinDigitalInput = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_10);
-//    private boolean isMessageReceived = false;
-//
-//    public void SendMessage(Integer inputPinNumber) throws InterruptedException {
-//        gpioPinDigitalInput.addListener(new GpioPinListenerDigital() {
-//            @Override
-//            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-//                gpioPinDigitalOutput.high();
-//                gpioPinDigitalOutput.toggle();
-//                long waitFor = System.currentTimeMillis() + 5000;
-//                while (System.currentTimeMillis() < waitFor) {
-//                    if (event.getState().toString().equalsIgnoreCase("HIGH")) {
-//                        isMessageReceived = true;
-//                        break;
-//                    }
-//                }
-//                System.out.println(isMessageReceived?"Can send message.":"Time out.");
-//                isMessageReceived = false;
-//            }
-//        });
-//
-//        String bits = Integer.toString(inputPinNumber, 2);
-//        for (char bit : bits.toCharArray()) {
-//            if (bit == '1') {
-//                gpioPinDigitalOutput.high();
-//                gpioPinDigitalOutput.toggle();
-//                Thread.sleep(5000);
-//                continue;
-//            }
-//            gpioPinDigitalOutput.low();
-//            gpioPinDigitalOutput.toggle();
-//            Thread.sleep(5000);
-//        }
-//
-//        gpioPinDigitalInput.addListener(new GpioPinListenerDigital() {
-//            @Override
-//            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-//                long waitFor = System.currentTimeMillis() + 5000;
-//                while (System.currentTimeMillis() < waitFor) {
-//                    if (event.getState().toString().equalsIgnoreCase("HIGH")) {
-//                        isMessageReceived = true;
-//                        break;
-//                    }
-//                }
-//                System.out.println(isMessageReceived?"Can send message.":"Time out.");
-//                isMessageReceived = false;
-//            }
-//        });
-//    }
-//}
+package com.rapberry.pi4led.controller;
+
+import com.pi4j.io.gpio.*;
+
+import com.rapberry.pi4led.threads.ListenThread;
+
+import java.util.ArrayList;
+
+public class MessageController {
+    private final GpioController gpioController = GpioFactory.getInstance();
+    interface MyPin extends GpioPinDigitalOutput, GpioPinDigitalInput {}
+    private MyPin pin = (MyPin) gpioController.provisionPin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
+    private ArrayList<Boolean> receivedMessage = new ArrayList<Boolean>();
+
+    private ListenThread t = new ListenThread("qwe");
+
+    public void receiveMessage() throws InterruptedException {
+        pin.setMode(PinMode.DIGITAL_INPUT);
+    }
+
+
+    public void sendMessage(Integer message) throws InterruptedException {
+        pin.setMode(PinMode.DIGITAL_OUTPUT);
+        for (char bit : Integer.toBinaryString(message).toCharArray()) {
+            if (bit == '1') {
+                pin.high();
+                Thread.sleep(500);
+                continue;
+            }
+            pin.low();
+            Thread.sleep(500);
+        }
+        pin.high();
+    }
+}
