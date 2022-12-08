@@ -1,8 +1,6 @@
 package com.rapberry.pi4led.controller;
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
