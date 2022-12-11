@@ -15,6 +15,7 @@ public class LedController {
     Integer msg = 13;
     @RequestMapping("/")
     public String greeting() throws InterruptedException {
+        t.start();
         messageController.sendMessage(0);
         messageController.sendMessage(msg);
         return Integer.toBinaryString(msg);
