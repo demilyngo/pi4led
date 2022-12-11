@@ -67,14 +67,20 @@ public class MessageController {
     }
 
     public void setInput() {
-        if(pin == null || pin.getMode() == PinMode.DIGITAL_OUTPUT) {
+        if (pin == null) {
             pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_INPUT);
+        }
+        if (pin.getMode() == PinMode.DIGITAL_OUTPUT) {
+            pin.setMode(PinMode.DIGITAL_INPUT);
         }
     }
 
     public void setOutput() {
-        if(pin == null || pin.getMode() == PinMode.DIGITAL_INPUT) {
+        if (pin == null) {
             pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
+        }
+        if (pin.getMode() == PinMode.DIGITAL_INPUT) {
+            pin.setMode(PinMode.DIGITAL_OUTPUT);
         }
     }
 
