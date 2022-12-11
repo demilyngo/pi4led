@@ -38,6 +38,7 @@ public class MessageController {
                 continue;
             }
             outputPin.low();
+            System.out.println(bit);
             Thread.sleep(500);
         }
         outputPin.high();
