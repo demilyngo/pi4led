@@ -21,23 +21,23 @@ public class MessageController {
         @Override
         public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
             if(pin.isHigh() && !receiving) {  //
-                receiving = true;
-                for (int i=0; i!=8; i++) {
-                    receivedMessage.add(pin.isHigh());
-                    System.out.println("Received: " + receivedMessage.get(i));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                receivedMessage.clear();
-                receiving = false;
-//                try {
-//                    receiveMessage();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
+//                receiving = true;
+//                for (int i=0; i!=8; i++) {
+//                    receivedMessage.add(pin.isHigh());
+//                    System.out.println("Received: " + receivedMessage.get(i));
+//                    try {
+//                        Thread.sleep(500);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
 //                }
+//                receivedMessage.clear();
+//                receiving = false;
+                try {
+                    receiveMessage();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
