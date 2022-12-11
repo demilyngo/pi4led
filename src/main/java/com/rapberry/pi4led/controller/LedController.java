@@ -12,7 +12,6 @@ public class LedController {
 
     @RequestMapping("/")
     public String greeting() throws InterruptedException {
-        messageController.setListener();
         messageController.sendMessage(0);
         messageController.sendMessage(msg);
         return Integer.toBinaryString(msg);

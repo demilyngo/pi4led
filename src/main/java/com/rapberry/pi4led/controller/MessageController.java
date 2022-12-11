@@ -32,17 +32,12 @@ public class MessageController {
 
     public void receiveMessage() throws InterruptedException {
         receiving = true;
-        while(true) {
-            //receivedMessage.add(pin.isHigh());
-            System.out.println(pin.isHigh());
+        for (int i=0; i!=8; i++) {
+            receivedMessage.add(pin.isHigh());
+            System.out.println("Received: " + receivedMessage.get(i));
             Thread.sleep(500);
         }
-//        for (int i=0; i!=8; i++) {
-//            receivedMessage.add(pin.isHigh());
-//            System.out.println("Received: " + receivedMessage.get(i));
-//            Thread.sleep(500);
-//        }
-        //receiving = false;
+        receiving = false;
     }
 
     public void sendMessage(Integer message) throws InterruptedException {
