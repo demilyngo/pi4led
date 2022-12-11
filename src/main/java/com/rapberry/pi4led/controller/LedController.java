@@ -8,17 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LedController {
     final MessageController messageController = new MessageController();
-    GpioController gpioController = GpioFactory.getInstance();
-
-    private ListenThread t = new ListenThread("qwe");
-
     Integer msg = 13;
+
     @RequestMapping("/")
     public String greeting() throws InterruptedException {
-        t.start();
+        messageController.setListener();
         messageController.sendMessage(0);
         messageController.sendMessage(msg);
         return Integer.toBinaryString(msg);
-
     }
+
 }
