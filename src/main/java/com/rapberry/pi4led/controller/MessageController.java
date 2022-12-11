@@ -31,6 +31,7 @@ public class MessageController {
     };
 
     public void receiveMessage() throws InterruptedException {
+        removeListener();
         receiving = true;
         for (int i=0; i!=8; i++) {
             receivedMessage.add(pin.isHigh());
@@ -38,6 +39,7 @@ public class MessageController {
             Thread.sleep(500);
         }
         receiving = false;
+        setListener();
     }
 
     public void sendMessage(Integer message) throws InterruptedException {
