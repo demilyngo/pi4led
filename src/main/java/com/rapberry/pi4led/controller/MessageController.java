@@ -20,19 +20,7 @@ public class MessageController {
     public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
         @Override
         public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
-            if(pin.isHigh() && !receiving) {  //
-//                receiving = true;
-//                for (int i=0; i!=8; i++) {
-//                    receivedMessage.add(pin.isHigh());
-//                    System.out.println("Received: " + receivedMessage.get(i));
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                receivedMessage.clear();
-//                receiving = false;
+            if(pin.isHigh() && !receiving) {
                 try {
                     receiveMessage();
                 } catch (InterruptedException e) {
@@ -49,6 +37,7 @@ public class MessageController {
             System.out.println("Received: " + receivedMessage.get(i));
             Thread.sleep(500);
         }
+        receivedMessage.clear();
         receiving = false;
     }
 
@@ -91,6 +80,7 @@ public class MessageController {
         }
     }
 
+    @PostConstruct
     public void setListener() {
         setInput();
         gpioController.addListener(listener, pin);
@@ -101,7 +91,7 @@ public class MessageController {
         setOutput();
     }
 
-    MessageController() {
-        setListener();
-    }
+//    MessageController() {
+//        setListener();
+//    }
 }
