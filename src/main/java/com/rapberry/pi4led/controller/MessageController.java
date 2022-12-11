@@ -13,8 +13,6 @@ public class MessageController {
 
     private ArrayList<Boolean> receivedMessage = new ArrayList<Boolean>();
 
-    private ListenThread t = new ListenThread("qwe");
-
     public void receiveMessage() throws InterruptedException {
         if(outputPin == null) {
             GpioController gpioController = GpioFactory.getInstance();
