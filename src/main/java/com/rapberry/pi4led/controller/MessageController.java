@@ -79,8 +79,7 @@ public class MessageController {
             pin.setMode(PinMode.DIGITAL_OUTPUT);
         }
     }
-
-    @PostConstruct
+    
     public void setListener() {
         setInput();
         gpioController.addListener(listener, pin);
@@ -91,7 +90,7 @@ public class MessageController {
         setOutput();
     }
 
-//    MessageController() {
-//        setListener();
-//    }
+    MessageController() {
+        setListener();
+    }
 }
