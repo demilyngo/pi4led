@@ -7,29 +7,39 @@ import com.rapberry.pi4led.threads.ListenThread;
 import java.util.ArrayList;
 
 public class MessageController {
-    private final GpioController gpioController = GpioFactory.getInstance();
-    interface MyPin extends GpioPinDigitalOutput, GpioPinDigitalInput {}
-    private MyPin pin = (MyPin) gpioController.provisionPin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
+
+    private static GpioPinDigitalInput inputPin;
+    private static GpioPinDigitalOutput outputPin;
+
     private ArrayList<Boolean> receivedMessage = new ArrayList<Boolean>();
 
     private ListenThread t = new ListenThread("qwe");
 
     public void receiveMessage() throws InterruptedException {
-        pin.setMode(PinMode.DIGITAL_INPUT);
+        if(outputPin == null) {
+            GpioController gpioController = GpioFactory.getInstance();
+            inputPin = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_01, "Input Pin");
+        }
     }
 
 
     public void sendMessage(Integer message) throws InterruptedException {
-        pin.setMode(PinMode.DIGITAL_OUTPUT);
+
+        if(outputPin == null) {
+            GpioController gpioController = GpioFactory.getInstance();
+            outputPin = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Output Pin", PinState.HIGH);
+        }
+
         for (char bit : Integer.toBinaryString(message).toCharArray()) {
             if (bit == '1') {
-                pin.high();
+                outputPin.high();
+                System.out.println(bit);
                 Thread.sleep(500);
                 continue;
             }
-            pin.low();
+            outputPin.low();
             Thread.sleep(500);
         }
-        pin.high();
+        outputPin.high();
     }
 }
