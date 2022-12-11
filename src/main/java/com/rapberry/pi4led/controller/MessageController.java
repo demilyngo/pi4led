@@ -79,7 +79,6 @@ public class MessageController {
         }
     }
 
-    @PostConstruct
     public void setListener() {
         setInput();
         gpioController.addListener(listener, pin);
@@ -88,5 +87,9 @@ public class MessageController {
     public void removeListener() {
         gpioController.removeListener(listener, pin);
         setOutput();
+    }
+
+    MessageController() {
+        setListener();
     }
 }
