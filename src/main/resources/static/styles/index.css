@@ -1,0 +1,77 @@
+body {
+    background-color: #BC8F8F;
+}
+.mainHeader {
+    font-size: 36px;
+    text-align: center;
+    border: 2px solid black;
+    margin: 20px;
+}
+
+.mainContent {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.leftSide {
+    border: 2px solid black;
+    background-color: white;
+}
+
+.state {
+    border: 2px solid black;
+    font-size: 26px;
+}
+
+.rightSide {
+    border: 2px solid black;
+    margin: 0 auto;
+    width: 1400px;
+}
+
+.wagons {
+    width:400px;
+    height:600px;
+    background: #fff;
+    border: 1px solid #C1C1C1;
+    overflow-y: auto;
+    vertical-align: bottom;
+}
+
+.firstRow {
+    display: flex;
+    justify-content: space-around;
+}
+
+.wagonItem {
+    display: flex;
+    justify-content: space-around;
+    background-color: pink;
+    border: 2px solid black;
+}
+
+.selectWagon {
+    height: 20px;
+    margin: auto 0;
+}
+
+.bottomRight {
+    display: flex;
+    justify-content: space-around;
+    border: 2px solid black;
+    margin-top: 600px;
+}
+
+.bottomRight p {
+    border: 2px solid black;
+    font-size: 26px;
+}
+
+.bottomRight button {
+    border: 2px solid black;
+    font-size: 26px;
+    height: 40px;
+    margin: auto 0;
+}
+
+
