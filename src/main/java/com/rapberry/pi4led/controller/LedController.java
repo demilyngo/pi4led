@@ -16,14 +16,16 @@ public class LedController {
 
     @RequestMapping("/")
     public String greeting(Model model) throws InterruptedException {
-
-        messageController.sendMessage(0);
-        messageController.sendMessage(msg);
-        return Integer.toBinaryString(msg);
+//        while(messageController.getControl() == MessageController.Control.FIELD) {
+//            Thread.sleep(1);
+//        }
+//        messageController.sendMessage(0);
+//        messageController.sendMessage(msg);
+//        //return Integer.toBinaryString(msg);
 //        ArrayList<MessageController> data = new ArrayList<MessageController>();
 //        data.add(messageController);
 //        model.addAttribute("data", data);
-        //return "index";
+        return "index";
     }
 
 }
