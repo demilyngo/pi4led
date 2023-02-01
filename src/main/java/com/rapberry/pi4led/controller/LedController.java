@@ -25,7 +25,7 @@ public class LedController {
 //        ArrayList<MessageController> data = new ArrayList<MessageController>();
 //        data.add(messageController);
 //        model.addAttribute("data", data);
-        return "index";
+        return "templates/index.html";
     }
 
 }
