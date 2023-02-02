@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Getting Started: Serving Web Content</title>
-    <link rel="stylesheet" href="/styles/index.css">
+    <link rel="stylesheet" href="/styles/index.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
@@ -19,7 +19,7 @@
                     <p>Тип груза</p>
                 </div>
                 <div class="wagonItem" th:each="wagon : ${counter}">
-                    <p th:text="${wagon.getIndex()}"/>
+                    <p th:text="${wagon.getIndex()}"></p>
                     <select class="selectWagon">
                         <option th:value="${wagon.getWhere()}" th:text="${wagon.getWhere()}"></option>
                         <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${city}"></option>
@@ -30,7 +30,7 @@
         </div>
 
         <div class="rightSide">
-            <img src="../imafges/Screenshot_2.jpg" alt="Тут должна быть карта">
+            <img src="../images/Screenshot_2.jpg" alt="Тут должна быть карта">
             <div class="bottomRight" >
                 <button>Начать сортировку</button>
                 <p th:text="${station.getControl().displayValue}"></p>
