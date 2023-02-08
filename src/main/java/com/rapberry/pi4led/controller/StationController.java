@@ -140,21 +140,22 @@ public class StationController {
 //                Thread.sleep(500);
 //            }
             System.out.println("message2");
+            pin.low();
+            Thread.sleep(1000);
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
                 if (bit == '1') {
                     pin.high();
                     System.out.println("Sent: " + bit);
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     continue;
                 }
                 pin.low();
                 System.out.println("Sent: " + bit);
-                Thread.sleep(500);
+                Thread.sleep(1000);
             }
             pin.high();
             sending = false;
             //setListener();
-            pin.low();
             System.out.println("finished");
         }
     }
