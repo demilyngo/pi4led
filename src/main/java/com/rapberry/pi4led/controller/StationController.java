@@ -42,11 +42,11 @@ public class StationController {
     private int trainCounter = 0;
     private String nameOfStation;
 
-//    boolean sending, receiving;
-//    private static GpioPinDigitalMultipurpose pin;
-//    private final BitSet receivedMessage = new BitSet(8);
-//
-//    private final GpioController gpioController = GpioFactory.getInstance();
+    boolean sending, receiving;
+    private static GpioPinDigitalMultipurpose pin;
+    private final BitSet receivedMessage = new BitSet(8);
+
+    private final GpioController gpioController = GpioFactory.getInstance();
 
 //    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
 //        @Override
@@ -127,41 +127,41 @@ public class StationController {
 
 
     //}
-/////////////////////////////////////////
-//    public void sendMessage(Integer message) throws InterruptedException {
-//        if (!receiving) {
-//            removeListener();
-//            sending = true;
-//
-//            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
-//                pin.low();
-//                Thread.sleep(500);
-//            }
-//
-//            for (char bit : Integer.toBinaryString(message).toCharArray()) {
-//                if (bit == '1') {
-//                    pin.high();
-//                    System.out.println("Sent: " + bit);
-//                    Thread.sleep(500);
-//                    continue;
-//                }
-//                pin.low();
-//                System.out.println("Sent: " + bit);
-//                Thread.sleep(500);
-//            }
-//            pin.high();
-//            sending = false;
-//            setListener();
-//        }
-//    }
-//
-//    public static Integer convertReceived(BitSet bits) {
-//        int value = 0;
-//        for (int i = 2; i != bits.length(); i++) {
-//            value += bits.get(i) ? (1 << i) : 0;
-//        }
-//        return value;
-//    }
+///////////////////////////////////////
+    public void sendMessage(Integer message) throws InterruptedException {
+        if (!receiving) {
+            //removeListener();
+            sending = true;
+
+            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
+                pin.low();
+                Thread.sleep(500);
+            }
+
+            for (char bit : Integer.toBinaryString(message).toCharArray()) {
+                if (bit == '1') {
+                    pin.high();
+                    System.out.println("Sent: " + bit);
+                    Thread.sleep(500);
+                    continue;
+                }
+                pin.low();
+                System.out.println("Sent: " + bit);
+                Thread.sleep(500);
+            }
+            pin.high();
+            sending = false;
+            //setListener();
+        }
+    }
+
+    public static Integer convertReceived(BitSet bits) {
+        int value = 0;
+        for (int i = 2; i != bits.length(); i++) {
+            value += bits.get(i) ? (1 << i) : 0;
+        }
+        return value;
+    }
 //
 //
 //    public void setInput() {
@@ -173,14 +173,14 @@ public class StationController {
 //        }
 //    }
 //
-//    public void setOutput() {
-//        if (pin == null) {
-//            pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
-//        }
-//        if (pin.getMode() == PinMode.DIGITAL_INPUT) {
-//            pin.setMode(PinMode.DIGITAL_OUTPUT);
-//        }
-//    }
+    public void setOutput() {
+        if (pin == null) {
+            pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
+        }
+        if (pin.getMode() == PinMode.DIGITAL_INPUT) {
+            pin.setMode(PinMode.DIGITAL_OUTPUT);
+        }
+    }
 //
 //    public void setListener() {
 //        setInput();
@@ -199,7 +199,7 @@ public class StationController {
 //    }
 
     StationController(State state, Control control, int trainCounter, String name) {
-        //setListener();
+        setOutput();
         this.state = state;
         this.control = control;
         this.trainCounter = trainCounter;

@@ -10,13 +10,13 @@ import java.util.Arrays;
 
 @Controller
 public class WebController {
-//    final StationController stationController = new StationController();
-//    Integer msg = 13;
+    final StationController stationController = new StationController(State.SORTING, Control.FIELD, 3, "Сургутская");
+    Integer msg = 13;
 
     @RequestMapping("/")
     public String greeting(Model model) throws InterruptedException {
         ArrayList<StationController> station = new ArrayList<StationController>();
-        station.add(new StationController(State.SORTING, Control.FIELD, 3, "Сургутская"));
+        station.add(stationController);
         model.addAttribute("station", station);
 
         ArrayList<String> cities = new ArrayList<String>(Arrays.asList("Москва", "Казань", "Нижневартовск", "Воркута"));
@@ -27,6 +27,9 @@ public class WebController {
             counter.add(new wagonModel(i, cities.get((int) (Math.random() * 4))));
         }
         model.addAttribute("counter", counter);
+
+        stationController.sendMessage(msg);
+
         return "index";
     }
 
