@@ -129,6 +129,7 @@ public class StationController {
     //}
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
+        receiving = false;
         if (!receiving) {
             //removeListener();
             sending = true;
