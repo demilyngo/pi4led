@@ -11,9 +11,11 @@
 
     <div class="mainContent" >
         <div class="leftSide">
-            <select>
-                <option value="city">Город</option>
-            </select>
+            <form>
+                <select>
+                    <option value="city">Город</option>
+                </select>
+            </form>
             <p class="state" th:text="'Состояние: ' + ${station.getState().displayValue}"></p>
             <div class="wagons">
                 <div class="firstRow">
