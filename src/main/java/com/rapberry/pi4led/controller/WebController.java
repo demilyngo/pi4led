@@ -15,6 +15,7 @@ public class WebController {
 
     @RequestMapping("/")
     public String greeting(Model model) throws InterruptedException {
+        System.out.println("get");
         ArrayList<StationController> station = new ArrayList<StationController>();
         station.add(stationController);
         model.addAttribute("station", station);
@@ -28,7 +29,9 @@ public class WebController {
         }
         model.addAttribute("counter", counter);
 
+        System.out.println("before sending");
         stationController.sendMessage(msg);
+        System.out.println("after sending");
 
         return "index";
     }

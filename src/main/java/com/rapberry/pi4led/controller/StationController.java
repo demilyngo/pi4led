@@ -129,6 +129,7 @@ public class StationController {
     //}
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
+        System.out.println("sending message");
         receiving = false;
         if (!receiving) {
             //removeListener();
@@ -153,6 +154,7 @@ public class StationController {
             pin.high();
             sending = false;
             //setListener();
+            System.out.println("finished");
         }
     }
 
@@ -181,6 +183,7 @@ public class StationController {
         if (pin.getMode() == PinMode.DIGITAL_INPUT) {
             pin.setMode(PinMode.DIGITAL_OUTPUT);
         }
+        System.out.println("set output");
     }
 //
 //    public void setListener() {
@@ -205,5 +208,6 @@ public class StationController {
         this.control = control;
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
+        System.out.println("Construcrot station");
     }
 }
