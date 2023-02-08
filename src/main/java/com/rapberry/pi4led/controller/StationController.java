@@ -154,6 +154,7 @@ public class StationController {
             pin.high();
             sending = false;
             //setListener();
+            pin.low();
             System.out.println("finished");
         }
     }
