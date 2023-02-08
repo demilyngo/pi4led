@@ -135,10 +135,10 @@ public class StationController {
             //removeListener();
             sending = true;
             System.out.println("message1");
-            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
-                pin.low();
-                Thread.sleep(500);
-            }
+//            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
+//                pin.low();
+//                Thread.sleep(500);
+//            }
             System.out.println("message2");
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
                 if (bit == '1') {
