@@ -157,6 +157,8 @@ public class StationController {
             sending = false;
             //setListener();
             System.out.println("finished");
+
+
         }
     }
 

@@ -33,6 +33,7 @@ public class WebController {
         System.out.println("before sending");
         stationController.sendMessage(msg);
         System.out.println("after sending");
+        stationController.sendMessage(0);
 
         return "index";
     }
