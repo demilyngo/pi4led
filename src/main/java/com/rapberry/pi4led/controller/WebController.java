@@ -17,7 +17,6 @@ public class WebController {
     public String greeting(Model model) throws InterruptedException {
         final StationController stationController = new StationController(State.SORTING, Control.SERVER, 3, "Сургутская");
         //Integer msg = 13;
-        System.out.println("get");
         ArrayList<StationController> station = new ArrayList<StationController>();
         station.add(stationController);
         model.addAttribute("station", station);
