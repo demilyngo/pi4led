@@ -87,42 +87,9 @@ public class StationController {
             }
         }
     };
-
     Thread thread = new Thread(task);
+    long listenerId = thread.getId();
 
-
-//    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
-//
-//        @Override
-//        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
-//            if (!receiving && !sending) {
-//                try {
-//                    checkControllerMessage = checkController1;
-//                    sendMessage(checkControllerMessage);
-//                    System.out.println("I check 1");
-//                    receiveMessage();
-//                    checkControllerMessage = checkController2;
-//                    System.out.println("I check 2");
-//                    sendMessage(checkControllerMessage);
-//                    receiveMessage();
-//                    checkControllerMessage = checkController3;
-//                    System.out.println("I check 3");
-//                    sendMessage(checkControllerMessage);
-//                    receiveMessage();
-//                    if(getControl() == Control.FIELD) {
-//                        System.out.println("I check 4");
-//                        checkControllerMessage = checkController4;
-//                        sendMessage(checkControllerMessage);
-//                        receiveMessage();
-//                    }
-//
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    };
 
     public void receiveMessage() throws InterruptedException {
         receivedMessage.clear();
@@ -199,12 +166,18 @@ public class StationController {
                 }
             }
         }
-//        receivedMessage.clear();
         receiving = false;
 
     }
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
+        if(Thread.currentThread().getId() != listenerId) {
+            System.out.println("Send from main thread");
+            thread.interrupt();
+        }
+        else {
+            System.out.println("Send from listener thread");
+        }
         if (!receiving) {
             //removeListener();
             setOutput();
@@ -230,6 +203,9 @@ public class StationController {
             sending = false;
             setInput();
             //setListener();
+        }
+        if(Thread.currentThread().getId() != listenerId) {
+            thread.start();
         }
     }
 
@@ -273,12 +249,13 @@ public class StationController {
 
 
     StationController(State state, Control control, int trainCounter, String name) {
-        setOutput();
+        setInput();
+        thread.start();
         this.state = state;
         this.control = control;
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
         System.out.println("Construcrot station");
-        thread.start();
+
     }
 }
