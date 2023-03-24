@@ -60,7 +60,7 @@ public class StationController {
     private final GpioController gpioController = GpioFactory.getInstance();
 
     Runnable task = () -> {
-        if (!receiving && !sending) {
+        while (!receiving && !sending) {
             try {
                 checkControllerMessage = checkController1;
                 sendMessage(checkControllerMessage);
@@ -171,9 +171,9 @@ public class StationController {
     }
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
-        if(Thread.currentThread().getId() != listenerId) {
+        if(Thread.currentThread().getId() == listenerId) {
             System.out.println("Send from main thread");
-            thread.interrupt();
+            //thread.interrupt();
         }
         else {
             System.out.println("Send from listener thread");
