@@ -59,37 +59,70 @@ public class StationController {
 
     private final GpioController gpioController = GpioFactory.getInstance();
 
-    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
-        @Override
-        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
-            if (!receiving && !sending) {
-                try {
-                    checkControllerMessage = checkController1;
+    Runnable task = () -> {
+        if (!receiving && !sending) {
+            try {
+                checkControllerMessage = checkController1;
+                sendMessage(checkControllerMessage);
+                System.out.println("I check 1");
+                receiveMessage();
+                checkControllerMessage = checkController2;
+                System.out.println("I check 2");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                checkControllerMessage = checkController3;
+                System.out.println("I check 3");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                if(getControl() == Control.FIELD) {
+                    System.out.println("I check 4");
+                    checkControllerMessage = checkController4;
                     sendMessage(checkControllerMessage);
-                    System.out.println("I check 1");
                     receiveMessage();
-                    checkControllerMessage = checkController2;
-                    System.out.println("I check 2");
-                    sendMessage(checkControllerMessage);
-                    receiveMessage();
-                    checkControllerMessage = checkController3;
-                    System.out.println("I check 3");
-                    sendMessage(checkControllerMessage);
-                    receiveMessage();
-                    if(getControl() == Control.FIELD) {
-                        System.out.println("I check 4");
-                        checkControllerMessage = checkController4;
-                        sendMessage(checkControllerMessage);
-                        receiveMessage();
-                    }
-
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     };
+
+    Thread thread = new Thread(task);
+
+
+//    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
+//
+//        @Override
+//        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
+//            if (!receiving && !sending) {
+//                try {
+//                    checkControllerMessage = checkController1;
+//                    sendMessage(checkControllerMessage);
+//                    System.out.println("I check 1");
+//                    receiveMessage();
+//                    checkControllerMessage = checkController2;
+//                    System.out.println("I check 2");
+//                    sendMessage(checkControllerMessage);
+//                    receiveMessage();
+//                    checkControllerMessage = checkController3;
+//                    System.out.println("I check 3");
+//                    sendMessage(checkControllerMessage);
+//                    receiveMessage();
+//                    if(getControl() == Control.FIELD) {
+//                        System.out.println("I check 4");
+//                        checkControllerMessage = checkController4;
+//                        sendMessage(checkControllerMessage);
+//                        receiveMessage();
+//                    }
+//
+//
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    };
 
     public void receiveMessage() throws InterruptedException {
         receivedMessage.clear();
@@ -246,5 +279,6 @@ public class StationController {
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
         System.out.println("Construcrot station");
+        thread.start();
     }
 }
