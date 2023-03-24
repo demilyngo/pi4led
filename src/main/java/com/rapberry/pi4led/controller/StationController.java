@@ -36,10 +36,21 @@ enum Control {
 @Setter
 @ToString
 public class StationController {
+    private static final int startBitLength = 1;
+    private static final int stopBitLength = 1;
+    private static final int controllerLength = 2;
+    private static final int taskLength = 4;
+
+    private Integer checkController1 = 256;
+    private Integer checkController2 = 320;
+    private Integer checkController3 = 384;
+    private Integer checkController4 = 448;
+    private Integer checkControllerMessage;
+
     private State state;
     private Control control;
 
-    private int trainCounter = 0;
+    private int trainCounter;
     private String nameOfStation;
 
     boolean sending, receiving;
@@ -48,98 +59,123 @@ public class StationController {
 
     private final GpioController gpioController = GpioFactory.getInstance();
 
-//    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
-//        @Override
-//        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
-//            if(pin.isHigh() && !receiving) {
-//                try {
-//                    receiveMessage();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    };
+    public GpioPinListenerDigital listener = new GpioPinListenerDigital() {
+        @Override
+        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent gpioPinDigitalStateChangeEvent) {
+            if (!receiving && !sending) {
+                try {
+                    checkControllerMessage = checkController1;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                    checkControllerMessage = checkController2;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                    checkControllerMessage = checkController3;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                    if(getControl() == Control.FIELD) {
+                        checkControllerMessage = checkController4;
+                        sendMessage(checkControllerMessage);
+                        receiveMessage();
+                    }
 
-//    public void receiveMessage() throws InterruptedException {
-//        receivedMessage.clear();
-//        receiving = true;
-//        for (int i=0; i!=8; i++) {
-//            if (pin.isHigh()) {
-//                receivedMessage.set(i);
-//            } else {
-//                receivedMessage.clear(i);
-//            }
-//            System.out.println("Received: " + receivedMessage.get(i));
-//            Thread.sleep(500);
-//        }
-//        receiving = false;
-        ///////////////////////
-//        if(receivedMessage.get(0)) {
-//            if(!receivedMessage.get(1)) {
-//                //sensors
-//                /*if( xx && state == State.WAITING) {
-//                    trainCounter++;
-//                }*/
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    public void receiveMessage() throws InterruptedException {
+        receivedMessage.clear();
+        receiving = true;
+        for (int i=0; i!=startBitLength+startBitLength+controllerLength+taskLength; i++) {
+            if (pin.isHigh()) {
+                receivedMessage.set(i);
+            } else {
+                receivedMessage.clear(i);
+            }
+            System.out.println("Received: " + receivedMessage.get(i));
+            Thread.sleep(500);
+        }
+
+
+        if(receivedMessage.previousSetBit(startBitLength+startBitLength+controllerLength+taskLength) == 0 ) {
+            receiving = false;
+            return;
+        }
+//        if(receivedMessage.isEmpty()) { //Indicator
 //
-//                /*if( xx && state == State.SORTING) {
-//                    sendMessage(); // NA OTSCEP
-//                    trainCounter--;
-//                    if(trainCounter == 0) {
-//                        state = State.WAITING;
-//                    }
-//                }*/
-//                //Start sorting if button pressed
-//                /*if() {
-//                    state = State.SORTING;
-//                }*/
-//            }
-//            if(receivedMessage.get(1)) { //stand buttons
-//                switch (convertReceived(receivedMessage)) {
-//                    case 1:
-//                        sendMessage(1); //semaphore way 1
-//                        sendMessage(17); //rails way 1
-//                        break;
-//                    case 2:
-//                        sendMessage(3); //semaphore way 2
-//                        sendMessage(19); //rails way 2
-//                        break;
-//                    case 3:
-//                        sendMessage(5); //semaphore way 3
-//                        sendMessage(21); //rails way 3
-//                        break;
-//                    case 4:
-//                        sendMessage(7); //semaphore way 4
-//                        sendMessage(23); //rails way 4
-//                        break;
-//                    case 5:
-//                        sendMessage(9); //semaphore way 5
-//                        sendMessage(25); //rails way 5
-//                        break;
-//                    case 6:
-//                        sendMessage(11); //semaphore way 6
-//                        sendMessage(27); //rails way 6
-//                        break;
-//                }
-//            }
 //        }
-        //receivedMessage.clear();
 
+        if(receivedMessage.get(0)) {
+            if(convertReceived(receivedMessage) == 0) {
+                //sensors
+                /*if( xx && state == State.WAITING) {
+                    trainCounter++;
+                }*/
 
-    //}
+                /*if( xx && state == State.SORTING) {
+                    sendMessage(); // NA OTSCEP
+                    trainCounter--;
+                    if(trainCounter == 0) {
+                        state = State.WAITING;
+                    }
+                }*/
+                //Start sorting if button pressed
+                /*if() {
+                    state = State.SORTING;
+                }*/
+            }
+            if(getControl()==Control.FIELD) {
+                if (convertReceived(receivedMessage) > 448) { //stand buttons
+                    switch (convertReceived(receivedMessage)) {
+                        case 450 -> {
+                            sendMessage(258); //semaphore way 1
+                            sendMessage(322); //rails way 1
+                        }
+                        case 452 -> {
+                            sendMessage(260); //semaphore way 2
+                            sendMessage(324); //rails way 2
+                        }
+                        case 454 -> {
+                            sendMessage(262); //semaphore way 3
+                            sendMessage(326); //rails way 3
+                        }
+                        case 456 -> {
+                            sendMessage(264); //semaphore way 4
+                            sendMessage(328); //rails way 4
+                        }
+                        case 458 -> {
+                            sendMessage(266); //semaphore way 5
+                            sendMessage(330); //rails way 5
+                        }
+                        case 460 -> {
+                            sendMessage(268); //semaphore way 6
+                            sendMessage(332); //rails way 6
+                        }
+                        case 462 -> {
+                            sendMessage(270);
+                        }
+                    }
+                }
+            }
+        }
+//        receivedMessage.clear();
+        receiving = false;
+
+    }
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
-        System.out.println("sending message");
-        receiving = false;
         if (!receiving) {
             //removeListener();
+            setOutput();
             sending = true;
-            System.out.println("message1");
 //            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
 //                pin.low();
 //                Thread.sleep(500);
 //            }
-            System.out.println("message2");
             pin.low();
             Thread.sleep(1000);
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
@@ -155,10 +191,8 @@ public class StationController {
             }
             pin.high();
             sending = false;
+            setInput();
             //setListener();
-            System.out.println("finished");
-
-
         }
     }
 
@@ -169,17 +203,17 @@ public class StationController {
         }
         return value;
     }
-//
-//
-//    public void setInput() {
-//        if (pin == null) {
-//            pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_INPUT);
-//        }
-//        if (pin.getMode() == PinMode.DIGITAL_OUTPUT) {
-//            pin.setMode(PinMode.DIGITAL_INPUT);
-//        }
-//    }
-//
+
+
+    public void setInput() {
+        if (pin == null) {
+            pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_INPUT);
+        }
+        if (pin.getMode() == PinMode.DIGITAL_OUTPUT) {
+            pin.setMode(PinMode.DIGITAL_INPUT);
+        }
+    }
+
     public void setOutput() {
         if (pin == null) {
             pin = gpioController.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
@@ -189,22 +223,17 @@ public class StationController {
         }
         System.out.println("set output");
     }
-//
-//    public void setListener() {
-//        setInput();
-//        gpioController.addListener(listener, pin);
-//    }
-//
-//    public void removeListener() {
-//        gpioController.removeListener(listener, pin);
-//        setOutput();
-//    }
-//
-//    StationController() {
-//        setListener();
-//        state = State.WAITING;
-//        control = Control.SERVER;
-//    }
+
+    public void setListener() {
+        setInput();
+        gpioController.addListener(listener, pin);
+    }
+
+    public void removeListener() {
+        gpioController.removeListener(listener, pin);
+        setOutput();
+    }
+
 
     StationController(State state, Control control, int trainCounter, String name) {
         setOutput();

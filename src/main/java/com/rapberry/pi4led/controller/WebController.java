@@ -2,6 +2,7 @@ package com.rapberry.pi4led.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class WebController {
 
     @RequestMapping("/")
     public String greeting(Model model) throws InterruptedException {
-        final StationController stationController = new StationController(State.SORTING, Control.FIELD, 3, "Сургутская");
+        final StationController stationController = new StationController(State.SORTING, Control.SERVER, 3, "Сургутская");
         Integer msg = 13;
         System.out.println("get");
         ArrayList<StationController> station = new ArrayList<StationController>();
