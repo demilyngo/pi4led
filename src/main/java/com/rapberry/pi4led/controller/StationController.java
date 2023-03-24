@@ -263,11 +263,11 @@ public class StationController {
 
     public void setListener() {
         setInput();
-        gpioController.addListener(listener, pin);
+        //gpioController.addListener(listener, pin);
     }
 
     public void removeListener() {
-        gpioController.removeListener(listener, pin);
+        //gpioController.removeListener(listener, pin);
         setOutput();
     }
 
