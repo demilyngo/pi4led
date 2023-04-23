@@ -2,51 +2,90 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Getting Started: Serving Web Content</title>
-    <link rel="stylesheet" href="/styles/index.css"/>
+    <link rel="stylesheet" href="/styles/index.css">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="wrapper" th:each="station : ${station}">
-    <header class="mainHeader" th:text="${station.getNameOfStation()}">Станция Сургутская</header>
-    <label for="pet-select">Choose a pet:</label>
+    <div class="wrapper" th:each="station : ${station}">
+        <header class="mainHeader" th:text="${station.getNameOfStation()}">Станция Сургутская</header>
 
-    <select name="pets" id="pet-select">
-        <option value="">--Please choose an option--</option>
-        <option value="dog">Dog</option>
-        <option value="cat">Cat</option>
-        <option value="hamster">Hamster</option>
-        <option value="parrot">Parrot</option>
-        <option value="spider">Spider</option>
-        <option value="goldfish">Goldfish</option>
-    </select>
-    <div class="mainContent" >
-        <div class="leftSide">
-            <p class="state" th:text="'Состояние: ' + ${station.getState().displayValue}"></p>
-            <div class="wagons">
-                <div class="firstRow">
-                    <p>Вагон</p>
-                    <p>Пункт назначения</p>
-                    <p>Тип груза</p>
-                </div>
-                <div class="wagonItem" th:each="wagon : ${counter}">
-                    <p th:text="${wagon.getIndex()}"></p>
-                    <select class="selectWagon">
-                        <option th:value="${wagon.getWhere()}" th:text="${wagon.getWhere()}"></option>
-                        <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${city}"></option>
-                    </select>
-                    <input type="checkbox" class="type"/>
-                </div>
+        <div class="mainContent" >
+            <div class="leftSide">
+                <img src="../images/SurSU_logo.jpg" alt="Логотип СурГУ">
+                <p class="state" th:text="'Состояние: ' + ${station.getState().displayValue}"></p>
+
+
+
+                <form action="/" method="post" id="form">
+                    <div class="wagons">
+                        <div class="firstRow">
+                            <p>Вагон</p>
+                            <p>Пункт назначения</p>
+                            <p>Тип груза</p>
+                        </div>
+                        <div class="wagonItem" th:each="wagon : ${wagonList}">
+                            <div class="wagonNumber">
+                                <p th:text="${wagon.getIndex()}"/>
+                            </div>
+                            <div class="select" th:id="${wagon.getIndex()}">
+                                <div class="select_header" >
+                                    <span class="select_current" th:value="${wagon.getWhere()}" th:text="${wagon.getWhere()}"></span>
+                                </div>
+                                <div class="select_body">
+                                    <div class="select_item" th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${city}"></div>
+
+                                </div>
+                            </div>
+        <!--                    <select class="selectWagon">-->
+        <!--                        <option th:value="${wagon.getWhere()}" th:text="${wagon.getWhere()}"></option>-->
+        <!--                        <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${city}"></option>-->
+        <!--                    </select>-->
+
+
+
+                            <input type="checkbox" class="type"/>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
 
-        <div class="rightSide">
-            <img src="../images/Screenshot_2.jpg" alt="Тут должна быть карта">
-            <div class="bottomRight" >
-                <button>Начать сортировку</button>
-                <p th:text="${station.getControl().displayValue}"></p>
+            <div class="rightSide">
+                <img class="map" src="../images/Map.jpg" alt="Тут должна быть карта">
+                <div class="bottomRight" >
+                    <button type="submit" form="form">Начать сортировку</button>
+                    <p th:text="${station.getControl().displayValue}"></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <script >
+        const selectHeader = document.querySelectorAll(".select_header");
+        const selectItem = document.querySelectorAll(".select_item");
+
+        selectHeader.forEach(item=> {
+            item.addEventListener('click', toggleSelect);
+        })
+
+        selectItem.forEach(item=> {
+            item.addEventListener('click', selectChoose)
+        })
+
+        function toggleSelect() {
+            this.parentElement.classList.toggle("is-active");
+        }
+
+        function selectChoose () {
+            let text = this.innerText;
+            select = this.closest(".select");
+            currentText = select.querySelector(".select_current");
+            // currentText = this.closest(".select").querySelector(".select_current");
+            currentText.innerText = text;
+            select.classList.remove("is-active");
+        }
+
+    </script>
 </body>
 </html>
