@@ -51,6 +51,7 @@ public class StationController {
     private Control control;
 
     private int trainCounter;
+    private int currentWay = -1;
     private String nameOfStation;
 
     boolean sending, receiving;
@@ -59,7 +60,7 @@ public class StationController {
 
     private final GpioController gpioController = GpioFactory.getInstance();
 
-    Runnable task = () -> {
+    Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
                 checkControllerMessage = checkController1;
@@ -80,14 +81,12 @@ public class StationController {
                     sendMessage(checkControllerMessage);
                     receiveMessage();
                 }
-
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     };
-    Thread thread = new Thread(task);
+    Thread thread = new Thread(listener);
     long listenerId = thread.getId();
 
 
@@ -101,73 +100,73 @@ public class StationController {
                 receivedMessage.clear(i);
             }
             System.out.println("Received: " + receivedMessage.get(i));
-            Thread.sleep(500);
+            Thread.sleep(100);
         }
-
 
         if(receivedMessage.previousSetBit(startBitLength+startBitLength+controllerLength+taskLength) == 0 ) {
             receiving = false;
             return;
         }
-//        if(receivedMessage.isEmpty()) { //Indicator
-//
-//        }
 
-        if(receivedMessage.get(0)) {
-            if(convertReceived(receivedMessage) == 0) {
+        //reaction on messages
+        if(receivedMessage.get(0) && receivedMessage.get(1)) {
+            if (convertReceived(receivedMessage) == 464) {
                 //sensors
-                /*if( xx && state == State.WAITING) {
+                if (this.state == State.WAITING) {
                     trainCounter++;
-                }*/
+                }
 
-                /*if( xx && state == State.SORTING) {
-                    sendMessage(); // NA OTSCEP
+                if (this.state == State.SORTING) {
+                    sendMessage(334); // NA OTSCEP
                     trainCounter--;
-                    if(trainCounter == 0) {
-                        state = State.WAITING;
-                    }
-                }*/
-                //Start sorting if button pressed
-                /*if() {
-                    state = State.SORTING;
-                }*/
+                }
             }
-            if(getControl()==Control.FIELD) {
-                if (convertReceived(receivedMessage) > 448) { //stand buttons
-                    switch (convertReceived(receivedMessage)) {
-                        case 450 -> {
-                            sendMessage(258); //semaphore way 1
-                            sendMessage(322); //rails way 1
-                        }
-                        case 452 -> {
-                            sendMessage(260); //semaphore way 2
-                            sendMessage(324); //rails way 2
-                        }
-                        case 454 -> {
-                            sendMessage(262); //semaphore way 3
-                            sendMessage(326); //rails way 3
-                        }
-                        case 456 -> {
-                            sendMessage(264); //semaphore way 4
-                            sendMessage(328); //rails way 4
-                        }
-                        case 458 -> {
-                            sendMessage(266); //semaphore way 5
-                            sendMessage(330); //rails way 5
-                        }
-                        case 460 -> {
-                            sendMessage(268); //semaphore way 6
-                            sendMessage(332); //rails way 6
-                        }
-                        case 462 -> {
-                            sendMessage(270);
-                        }
+            receiving = false;
+            return;
+        }
+        if(getControl() == Control.FIELD) {
+            if (convertReceived(receivedMessage) > 448) { //stand buttons
+                switch (convertReceived(receivedMessage)) {
+                    case 450 -> {
+                        sendMessage(258); //semaphore way 1
+                        sendMessage(322); //rails way 1
+                        currentWay = 1;
+                    }
+                    case 452 -> {
+                        sendMessage(260); //semaphore way 2
+                        sendMessage(324); //rails way 2
+                        currentWay = 2;
+                    }
+                    case 454 -> {
+                        sendMessage(262); //semaphore way 3
+                        sendMessage(326); //rails way 3
+                        currentWay = 3;
+                    }
+                    case 456 -> {
+                        sendMessage(264); //semaphore way 4
+                        sendMessage(328); //rails way 4
+                        currentWay = 4;
+                    }
+                    case 458 -> {
+                        sendMessage(266); //semaphore way 5
+                        sendMessage(330); //rails way 5
+                        currentWay = 5;
+                    }
+                    case 460 -> {
+                        sendMessage(268); //semaphore way 6
+                        sendMessage(332); //rails way 6
+                        currentWay = 6;
+                    }
+                    case 462 -> {
+                        sendMessage(270); //toggle lights
+                    }
+                    case 464 -> {
+                        sendMessage(346);//start moving
                     }
                 }
             }
         }
         receiving = false;
-
     }
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
@@ -255,7 +254,7 @@ public class StationController {
         this.control = control;
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
-        System.out.println("Construcrot station");
+        System.out.println("Constructor station");
 
     }
 }
