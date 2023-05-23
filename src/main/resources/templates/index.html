@@ -17,7 +17,9 @@
                 <img src="../images/SurSU_logo.jpg" alt="Логотип СурГУ">
                 <p class="state" th:text="'Состояние: ' + ${station.getState().displayValue}"></p>
 
-                <form action="/" method="post" id="form">
+
+
+                <form id="form">
                     <div class="wagons">
                         <div class="firstRow">
                             <p>Вагон</p>
@@ -39,6 +41,8 @@
                             <!--                            </div>-->
                             <!--                        </div>-->
 
+
+
                             <select class="selectWagon" th:name="'wagon'">
                                 <option th:value="${wagon.getWayIndex()}" th:text="${wagon.getWhere()}"></option>
                                 <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${cities.indexOf(city)}"></option>
@@ -53,11 +57,12 @@
             <div class="rightSide">
                 <img class="map" src="../images/Screenshot_1.jpg" alt="Тут должна быть карта">
                 <div class="bottomRight" >
-                    <button type="submit" id="formButton" onclick="startSort()">Начать сортировку</button>
+                    <button id="formButton" >Начать сортировку</button>
                     <p th:text="${station.getControl().displayValue}"></p>
                 </div>
             </div>
         </div>
+        <p id="result"></p>
     </div>
     <script th:inline="javascript">
         function showValues() {

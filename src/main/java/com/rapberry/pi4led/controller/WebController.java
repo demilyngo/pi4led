@@ -29,8 +29,9 @@ public class WebController {
         model.addAttribute("cities", cities);
 
         ArrayList<wagonModel> wagonList = new ArrayList<wagonModel>();
-        for(int i=1; i!=stationController.getTrainCounter(); i++) {
-            wagonList.add(new wagonModel(i, cities.get((int) (Math.random() * 4))));
+        for(int i=1; i!=stationController.getTrainCounter()+1; i++) {
+            int way = (int) (Math.random() * 4);
+            wagonList.add(new wagonModel(i, cities.get(way), way));
         }
         model.addAttribute("wagonList", wagonList);
         return "index";

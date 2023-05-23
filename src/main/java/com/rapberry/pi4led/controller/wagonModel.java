@@ -10,4 +10,5 @@ import lombok.Setter;
 public class wagonModel {
     private int index;
     private String where;
+    private int wayIndex;
 }
