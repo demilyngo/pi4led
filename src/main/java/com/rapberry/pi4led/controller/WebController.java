@@ -48,10 +48,10 @@ public class WebController {
                 emitter.send(order);
                 do {
                     emitter.send("TrainCounter: " + stationController.getTrainCounter());
-                    if (stationController.getCurrentWay() > 0)
-                        emitter.send(WORDS[stationController.getCurrentWay() - 1]);
+//                    if (stationController.getCurrentWay() > 0)
+//                        emitter.send(WORDS[stationController.getCurrentWay() - 1]);
                     TimeUnit.SECONDS.sleep(1);
-                } while (stationController.getCurrentWay() != 5);
+                } while (stationController.getTrainCounter() < 40);
                 emitter.complete();
             } catch (Exception e) {
                 emitter.completeWithError(e);
