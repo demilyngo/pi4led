@@ -186,22 +186,18 @@ public class StationController {
             //removeListener();
             setOutput();
             sending = true;
-//            for(int i=0; i != Integer.toBinaryString(message).toCharArray().length - 8; i++) {
-//                pin.low();
-//                Thread.sleep(500);
-//            }
             pin.low();
-            Thread.sleep(1000);
+            Thread.sleep(100);
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
                 if (bit == '1') {
                     pin.high();
                     System.out.println("Sent: " + bit);
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                     continue;
                 }
                 pin.low();
                 System.out.println("Sent: " + bit);
-                Thread.sleep(1000);
+                Thread.sleep(100);
             }
             pin.high();
             sending = false;
