@@ -63,35 +63,35 @@ public class StationController {
     private final GpioController gpioController = GpioFactory.getInstance();
 
 
-//    Runnable listener = () -> {
-//        while (!receiving && !sending) {
-//            try {
-//                System.out.println(getListenerId());
-//                checkControllerMessage = checkController1;
-//                sendMessage(checkControllerMessage);
-//                System.out.println("I check 1");
-//                receiveMessage();
-//                checkControllerMessage = checkController2;
-//                System.out.println("I check 2");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
-//                checkControllerMessage = checkController3;
-//                System.out.println("I check 3");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
-//                if(getControl() == Control.FIELD) {
-//                    System.out.println("I check 4");
-//                    checkControllerMessage = checkController4;
-//                    sendMessage(checkControllerMessage);
-//                    receiveMessage();
-//                }
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    };
-//    Thread thread = new Thread(listener);
-//    long listenerId = thread.getId();
+    Runnable listener = () -> {
+        while (!receiving && !sending) {
+            try {
+                System.out.println(getListenerId());
+                checkControllerMessage = checkController1;
+                sendMessage(checkControllerMessage);
+                System.out.println("I check 1");
+                receiveMessage();
+                checkControllerMessage = checkController2;
+                System.out.println("I check 2");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                checkControllerMessage = checkController3;
+                System.out.println("I check 3");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                if(getControl() == Control.FIELD) {
+                    System.out.println("I check 4");
+                    checkControllerMessage = checkController4;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    Thread thread = new Thread(listener);
+    long listenerId = thread.getId();
 
 
     public void receiveMessage() throws InterruptedException {
@@ -175,13 +175,13 @@ public class StationController {
     }
 ///////////////////////////////////////
     public void sendMessage(Integer message) throws InterruptedException {
-////        if(Thread.currentThread().getId() == listenerId) {
-////            System.out.println("Send from main thread");
-////            //thread.interrupt();
-////        }
-//        else {
-//            System.out.println("Send from listener thread");
-//        }
+        if(Thread.currentThread().getId() == listenerId) {
+            System.out.println("Send from main thread");
+            //thread.interrupt();
+        }
+        else {
+            System.out.println("Send from listener thread");
+        }
         if (!receiving) {
             //removeListener();
             setOutput();
@@ -208,9 +208,9 @@ public class StationController {
             setInput();
             //setListener();
         }
-//        if(Thread.currentThread().getId() != listenerId) {
-//            thread.start();
-//        }
+        if(Thread.currentThread().getId() != listenerId) {
+            thread.start();
+        }
     }
 
     public static Integer convertReceived(BitSet bits) {
@@ -254,7 +254,7 @@ public class StationController {
 
     StationController(State state, Control control, int trainCounter, String name) {
         setInput();
-        //thread.start();
+        thread.start();
         this.state = state;
         this.control = control;
         this.trainCounter = trainCounter;
