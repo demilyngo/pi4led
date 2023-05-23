@@ -107,6 +107,8 @@
                 };
                 eventSource.onmessage = function (event) {
                     console.log('id: ' + event.lastEventId + ', data: ' + event.data);
+                    //$( ".state" ).text(  event.data );
+                    //document.getElementsByClassName(".map").src= event.data ;
                     $(".map").attr("src", "../images/" + event.data + ".jpg")
 
                     if (event.data.endsWith('6')) {
@@ -115,6 +117,8 @@
                     }
                 };
             }
+
+
         })
         showValues();
     </script>
