@@ -116,7 +116,7 @@ public class StationController {
         receivedMessage.clear(5);
         receivedMessage.set(6);
         receivedMessage.clear(7);
-        if(convertReceived(receivedMessage) == 202) {
+        if(receivedMessage.get(0)) {
             trainCounter++;
             receiving = false;
             return;
