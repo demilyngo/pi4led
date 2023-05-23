@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 
 @Controller
 public class WebController {
-    final StationController stationController = new StationController(State.WAITING, Control.SERVER, 0, "Сургутская");
+    final StationController stationController = new StationController(State.WAITING, Control.SERVER, 3, "Сургутская");
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String greeting(Model model) throws InterruptedException {
         ArrayList<StationController> station = new ArrayList<StationController>();
         station.add(stationController);
@@ -79,6 +79,7 @@ public class WebController {
                 }
             }
         });
+
         return "index";
     }
 
