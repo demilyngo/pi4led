@@ -195,10 +195,11 @@ public class StationController {
                 System.out.println("Sent: " + bit);
                 Thread.sleep(1000);
             }
-            pin.high();
+            pin.low();
             sending = false;
             setInput();
         }
+        setInput();
 //        if(Thread.currentThread().getId() != listenerId) {
 //            thread.start();
 //        }
