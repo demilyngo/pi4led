@@ -45,7 +45,7 @@ public class StationController {
 
     private Integer checkController1 = 256;
     private Integer checkController2 = 320;
-    private Integer checkController3 = 129; //////
+    private Integer checkController3 = 384; //////
     private Integer checkController4 = 448;
     private Integer checkControllerMessage;
 
