@@ -183,6 +183,7 @@ public class StationController {
     public synchronized void sendMessage(Integer message) throws InterruptedException {
         if (!receiving && !sending) {
             setOutput();
+            pin.low();
             sending = true;
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
                 if (bit == '1') {
@@ -251,8 +252,5 @@ public class StationController {
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
         System.out.println("Constructor station");
-    }
-    protected void finalize() {
-        pin.low();
     }
 }
