@@ -67,6 +67,7 @@ public class StationController {
     Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
+                System.out.println(Thread.currentThread().getName() + Thread.currentThread().getId());
 //                System.out.println(getListenerId());
 //                checkControllerMessage = checkController1;
 //                System.out.println("I check 1");
@@ -103,10 +104,15 @@ public class StationController {
                 if (pin.isHigh()) {
                     receivedMessage.set(i);
                 } else {
-                    receivedMessage.clear(i);
+                    receivedMessage.clear(i); ///CHECK STOP BIT ingore
                 }
                 System.out.println("Received: " + receivedMessage.get(i));
                 Thread.sleep(1000);
+            }
+            if(receivedMessage.get(startBitLength+startBitLength+controllerLength+taskLength-1)) {
+                receivedMessage.clear();
+                receiving = false;
+                return;
             }
 
             if (receivedMessage.nextSetBit(0) == 1) {
