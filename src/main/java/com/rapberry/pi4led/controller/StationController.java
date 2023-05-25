@@ -183,9 +183,9 @@ public class StationController {
     public synchronized void sendMessage(Integer message) throws InterruptedException {
         if (!receiving && !sending) {
             setOutput();
-            pin.high();
+            pin.low();
             sending = true;
-            for (char bit : convertToBitSet(message).toCharArray()) { //Integer.toBinaryString(message).toCharArray()
+            for (char bit : Integer.toBinaryString(message).toCharArray()) { //Integer.toBinaryString(message).toCharArray()
                 if (bit == '1') {
                     pin.high();
                     System.out.println("Sent: " + bit);
@@ -196,7 +196,7 @@ public class StationController {
                 System.out.println("Sent: " + bit);
                 Thread.sleep(1000);
             }
-            pin.high();
+            pin.low();
             sending = false;
             setInput();
         }
@@ -213,23 +213,23 @@ public class StationController {
         return value;
     }
 
-    public static String convertToBitSet(Integer message) {
-        StringBuilder resMessage = new StringBuilder();
-        int pos = startBitLength+startBitLength+controllerLength+taskLength - Integer.toBinaryString(message).length();
-        for(int i = 0; i!=startBitLength+startBitLength+controllerLength+taskLength - Integer.toBinaryString(message).length(); i++) {
-            resMessage.append("0");
-        }
-        for(char bit : Integer.toBinaryString(message).toCharArray()) {
-            if(bit == '1') {
-                resMessage.append("1");
-            }
-            else {
-                resMessage.append("0");
-            }
-            pos++;
-        }
-        return resMessage.toString();
-    }
+//    public static String convertToBitSet(Integer message) {
+//        StringBuilder resMessage = new StringBuilder();
+//        int pos = startBitLength+startBitLength+controllerLength+taskLength - Integer.toBinaryString(message).length();
+//        for(int i = 0; i!=startBitLength+startBitLength+controllerLength+taskLength - Integer.toBinaryString(message).length(); i++) {
+//            resMessage.append("0");
+//        }
+//        for(char bit : Integer.toBinaryString(message).toCharArray()) {
+//            if(bit == '1') {
+//                resMessage.append("1");
+//            }
+//            else {
+//                resMessage.append("0");
+//            }
+//            pos++;
+//        }
+//        return resMessage.toString();
+//    }
 
 
     public void setInput() {
