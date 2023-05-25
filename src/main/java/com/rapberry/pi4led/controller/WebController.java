@@ -45,7 +45,7 @@ public class WebController {
     public SseEmitter getWords(@RequestParam(value = "order", defaultValue = "0") String order) {
         SseEmitter emitter = new SseEmitter();
         cachedThreadPool.execute(() -> {
-            System.out.println(Thread.currentThread().getName() + Thread.currentThread().getId());
+            
             try {
                 emitter.send(order);
                 do {
