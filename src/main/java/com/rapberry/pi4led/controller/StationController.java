@@ -199,7 +199,6 @@ public class StationController {
             sending = false;
             setInput();
         }
-        setInput();
 //        if(Thread.currentThread().getId() != listenerId) {
 //            thread.start();
 //        }

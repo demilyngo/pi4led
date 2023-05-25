@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
@@ -81,6 +82,7 @@ public class WebController {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    System.out.println("qweqwedsadasdascxzz");
                 }
             }
         });
