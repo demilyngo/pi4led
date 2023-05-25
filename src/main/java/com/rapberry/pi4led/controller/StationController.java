@@ -106,7 +106,7 @@ public class StationController {
                     receivedMessage.clear(i);
                 }
                 System.out.println("Received: " + receivedMessage.get(i));
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
 
             if (receivedMessage.previousSetBit(startBitLength + startBitLength + controllerLength + taskLength) == 0) {
@@ -184,18 +184,16 @@ public class StationController {
         if (!receiving && !sending) {
             setOutput();
             sending = true;
-            pin.low();
-            Thread.sleep(100);
             for (char bit : Integer.toBinaryString(message).toCharArray()) {
                 if (bit == '1') {
                     pin.high();
                     System.out.println("Sent: " + bit);
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                     continue;
                 }
                 pin.low();
                 System.out.println("Sent: " + bit);
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
             pin.high();
             sending = false;
