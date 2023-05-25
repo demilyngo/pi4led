@@ -67,25 +67,25 @@ public class StationController {
     Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
-                System.out.println(getListenerId());
-                checkControllerMessage = checkController1;
-                System.out.println("I check 1");
-                sendMessage(checkControllerMessage);
-                receiveMessage();
-                checkControllerMessage = checkController2;
-                System.out.println("I check 2");
-                sendMessage(checkControllerMessage);
-                receiveMessage();
+//                System.out.println(getListenerId());
+//                checkControllerMessage = checkController1;
+//                System.out.println("I check 1");
+//                sendMessage(checkControllerMessage);
+//                receiveMessage();
+//                checkControllerMessage = checkController2;
+//                System.out.println("I check 2");
+//                sendMessage(checkControllerMessage);
+//                receiveMessage();
                 checkControllerMessage = checkController3;
                 System.out.println("I check 3");
                 sendMessage(checkControllerMessage);
                 receiveMessage();
-                if(getControl() == Control.FIELD) {
-                    System.out.println("I check 4");
-                    checkControllerMessage = checkController4;
-                    sendMessage(checkControllerMessage);
-                    receiveMessage();
-                }
+//                if(getControl() == Control.FIELD) {
+//                    System.out.println("I check 4");
+//                    checkControllerMessage = checkController4;
+//                    sendMessage(checkControllerMessage);
+//                    receiveMessage();
+//                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
