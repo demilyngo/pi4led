@@ -252,6 +252,8 @@ public class StationController {
         this.trainCounter = trainCounter;
         this.nameOfStation = name;
         System.out.println("Constructor station");
-
+    }
+    protected void finalize() {
+        pin.low();
     }
 }
