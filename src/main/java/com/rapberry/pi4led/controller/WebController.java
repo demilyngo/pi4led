@@ -67,7 +67,7 @@ public class WebController {
     @PostMapping("/")
     public String startSorting(@RequestBody String data)  {
         cachedThreadPool.execute(() -> {
-            System.out.println(Thread.currentThread().getName() + Thread.currentThread().getId() + " 3?");
+
             Pattern pattern = Pattern.compile("[0-6]");
             Matcher matcher = pattern.matcher(data);
             String res = "";

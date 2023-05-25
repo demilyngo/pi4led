@@ -67,6 +67,7 @@ public class StationController {
     Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
+                System.out.println(Thread.currentThread().getName() + Thread.currentThread().getId() + " 3?");
 //                System.out.println(getListenerId());
 //                checkControllerMessage = checkController1;
 //                System.out.println("I check 1");
