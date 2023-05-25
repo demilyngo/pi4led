@@ -52,6 +52,7 @@ public class StationController {
     private State state;
     private Control control;
 
+    private int sortedTrainCounter;
     private int trainCounter;
     private int currentWay = -1;
     private String nameOfStation;
@@ -66,27 +67,25 @@ public class StationController {
     Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
+                System.out.println(getListenerId());
+                checkControllerMessage = checkController1;
+                System.out.println("I check 1");
+                sendMessage(checkControllerMessage);
                 receiveMessage();
-//                System.out.println(getListenerId());
-//                checkControllerMessage = checkController1;
-//                sendMessage(checkControllerMessage);
-//                System.out.println("I check 1");
-//                receiveMessage();
-//                checkControllerMessage = checkController2;
-//                System.out.println("I check 2");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
-//                checkControllerMessage = checkController3;
-//                System.out.println("I check 3");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
-//                if(getControl() == Control.FIELD) {
-//                    System.out.println("I check 4");
-//                    checkControllerMessage = checkController4;
-//                    sendMessage(checkControllerMessage);
-//                    receiveMessage();
-//                }
-                Thread.sleep(2000);
+                checkControllerMessage = checkController2;
+                System.out.println("I check 2");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                checkControllerMessage = checkController3;
+                System.out.println("I check 3");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                if(getControl() == Control.FIELD) {
+                    System.out.println("I check 4");
+                    checkControllerMessage = checkController4;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -96,110 +95,93 @@ public class StationController {
     long listenerId = thread.getId();
 
 
-    public void receiveMessage() throws InterruptedException {
-        receivedMessage.clear();
-        receiving = true;
-//        for (int i=0; i!=startBitLength+startBitLength+controllerLength+taskLength; i++) {
-//            if (pin.isHigh()) {
-//                receivedMessage.set(i);
-//            } else {
-//                receivedMessage.clear(i);
-//            }
-//            System.out.println("Received: " + receivedMessage.get(i));
-//            Thread.sleep(100);
-//        }
-        receivedMessage.set(0);
-        receivedMessage.set(1);
-        receivedMessage.clear(2);
-        receivedMessage.clear(3);
-        receivedMessage.set(4);
-        receivedMessage.clear(5);
-        receivedMessage.set(6);
-        receivedMessage.clear(7);
-        if(receivedMessage.get(0)) {
-            trainCounter++;
-            receiving = false;
-            return;
-        }
-
-
-        if(receivedMessage.previousSetBit(startBitLength+startBitLength+controllerLength+taskLength) == 0 ) {
-            receiving = false;
-            System.out.println("Checked successfully");
-            return;
-        }
-
-        //reaction on messages
-        if(receivedMessage.get(0) && receivedMessage.get(1)) {
-            if (convertReceived(receivedMessage) == 464) {
-                //sensors
-                if (this.state == State.WAITING) {
-                    trainCounter++;
+    public synchronized void receiveMessage() throws InterruptedException {
+        if (!sending && !receiving) {
+            receivedMessage.clear();
+            receiving = true;
+            for (int i=0; i!=startBitLength+startBitLength+controllerLength+taskLength; i++) {
+                if (pin.isHigh()) {
+                    receivedMessage.set(i);
+                } else {
+                    receivedMessage.clear(i);
                 }
+                System.out.println("Received: " + receivedMessage.get(i));
+                Thread.sleep(100);
+            }
 
-                if (this.state == State.SORTING) {
-                    sendMessage(334); // NA OTSCEP
-                    trainCounter--;
+            if (receivedMessage.previousSetBit(startBitLength + startBitLength + controllerLength + taskLength) == 0) {
+                receiving = false;
+                System.out.println("Checked successfully");
+                return;
+            }
+
+            //reaction on messages
+            if (receivedMessage.get(0) && receivedMessage.get(1)) {
+                if (convertReceived(receivedMessage) == 400) {
+                    //sensors
+                    if (this.state == State.WAITING) {
+                        trainCounter++;
+                    }
+
+                    if (this.state == State.SORTING) {
+                        trainCounter--;
+                    }
+                }
+                if(convertReceived(receivedMessage) >= 386) {
+                    sortedTrainCounter ++;
+                    trainCounter --;
+                }
+                receiving = false;
+                return;
+            }
+            if (getControl() == Control.FIELD) {
+                if (convertReceived(receivedMessage) > 448) { //stand buttons
+                    switch (convertReceived(receivedMessage)) {
+                        case 450 -> {
+                            sendMessage(258); //semaphore way 1
+                            sendMessage(322); //rails way 1
+                            currentWay = 1;
+                        }
+                        case 452 -> {
+                            sendMessage(260); //semaphore way 2
+                            sendMessage(324); //rails way 2
+                            currentWay = 2;
+                        }
+                        case 454 -> {
+                            sendMessage(262); //semaphore way 3
+                            sendMessage(326); //rails way 3
+                            currentWay = 3;
+                        }
+                        case 456 -> {
+                            sendMessage(264); //semaphore way 4
+                            sendMessage(328); //rails way 4
+                            currentWay = 4;
+                        }
+                        case 458 -> {
+                            sendMessage(266); //semaphore way 5
+                            sendMessage(330); //rails way 5
+                            currentWay = 5;
+                        }
+                        case 460 -> {
+                            sendMessage(268); //semaphore way 6
+                            sendMessage(332); //rails way 6
+                            currentWay = 6;
+                        }
+                        case 462 -> {
+                            sendMessage(270); //toggle lights
+                        }
+                        case 464 -> {
+                            sendMessage(346);//start moving
+                        }
+                    }
                 }
             }
             receiving = false;
-            return;
         }
-        if(getControl() == Control.FIELD) {
-            if (convertReceived(receivedMessage) > 448) { //stand buttons
-                switch (convertReceived(receivedMessage)) {
-                    case 450 -> {
-                        sendMessage(258); //semaphore way 1
-                        sendMessage(322); //rails way 1
-                        currentWay = 1;
-                    }
-                    case 452 -> {
-                        sendMessage(260); //semaphore way 2
-                        sendMessage(324); //rails way 2
-                        currentWay = 2;
-                    }
-                    case 454 -> {
-                        sendMessage(262); //semaphore way 3
-                        sendMessage(326); //rails way 3
-                        currentWay = 3;
-                    }
-                    case 456 -> {
-                        sendMessage(264); //semaphore way 4
-                        sendMessage(328); //rails way 4
-                        currentWay = 4;
-                    }
-                    case 458 -> {
-                        sendMessage(266); //semaphore way 5
-                        sendMessage(330); //rails way 5
-                        currentWay = 5;
-                    }
-                    case 460 -> {
-                        sendMessage(268); //semaphore way 6
-                        sendMessage(332); //rails way 6
-                        currentWay = 6;
-                    }
-                    case 462 -> {
-                        sendMessage(270); //toggle lights
-                    }
-                    case 464 -> {
-                        sendMessage(346);//start moving
-                    }
-                }
-            }
-        }
-        receiving = false;
     }
 ///////////////////////////////////////
-    public void sendMessage(Integer message) throws InterruptedException {
-        if(Thread.currentThread().getId() == listenerId) {
-            System.out.println("Send from main thread");
-            //thread.interrupt();
-        }
-        else {
-            System.out.println("Send from listener thread");
-        }
-        if (!receiving) {
-            //removeListener();
+    public synchronized void sendMessage(Integer message) throws InterruptedException {
+        if (!receiving && !sending) {
             setOutput();
             sending = true;
             pin.low();
@@ -218,7 +200,6 @@ public class StationController {
             pin.high();
             sending = false;
             setInput();
-            //setListener();
         }
         if(Thread.currentThread().getId() != listenerId) {
             thread.start();

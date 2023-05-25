@@ -74,7 +74,11 @@ public class WebController {
             for (char way : res.toCharArray()) {
                 stationController.setCurrentWay(way);
                 try {
-                    TimeUnit.SECONDS.sleep(1);
+                    stationController.sendMessage(256+2*way);
+                    stationController.sendMessage(320+2*way); //message to change way
+                    while(StationController.convertReceived(stationController.getReceivedMessage()) < 386) {
+                        Thread.onSpinWait();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
