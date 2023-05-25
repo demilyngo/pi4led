@@ -199,9 +199,9 @@ public class StationController {
             sending = false;
             setInput();
         }
-        if(Thread.currentThread().getId() != listenerId) {
-            thread.start();
-        }
+//        if(Thread.currentThread().getId() != listenerId) {
+//            thread.start();
+//        }
     }
 
     public static Integer convertReceived(BitSet bits) {
