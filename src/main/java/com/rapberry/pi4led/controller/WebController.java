@@ -51,8 +51,7 @@ public class WebController {
                 emitter.send(eventBuilder.id("1").data(order));
                 int i = (int) (Math.random() * 5);
                 emitter.send(eventBuilder.id("2").data(WORDS[i]));
-                emitter.send(eventBuilder.id("3"));
-                emitter.complete();
+                emitter.send(eventBuilder.id("3").data("exit"));
                 TimeUnit.SECONDS.sleep(1);
             } catch (Exception e) {
                 emitter.completeWithError(e);
