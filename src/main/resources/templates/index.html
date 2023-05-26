@@ -108,7 +108,7 @@
                 };
                 eventSource.onmessage = function (event) {
                     console.log('id: ' + event.lastEventId + ', data: ' + event.data);
-                    $(".map").attr("src", "../images/" + event.data + ".jpg")
+                    $(".map").attr("src", "../images/" + event.data + ".jpg");
                     eventSource.close();
                     console.log('connection is closed');
                 };
