@@ -47,18 +47,23 @@ public class WebController {
         SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event();
         cachedThreadPool.execute(() -> {
             System.out.println("This is SSE " + Thread.currentThread().getId());
-            try {
-                eventBuilder.id("0").data("test");
-                emitter.send(eventBuilder.id("1").data(order));
-                TimeUnit.SECONDS.sleep(1);
-                int i = (int) (Math.random() * 5);
-                emitter.send(eventBuilder.id("2").data(WORDS[i]));
-                TimeUnit.SECONDS.sleep(1);
-                emitter.send(eventBuilder.id("3").data("exit"));
-                emitter.complete();
-                TimeUnit.SECONDS.sleep(1);
-            } catch (Exception e) {
-                emitter.completeWithError(e);
+            String id;
+            Object data;
+            for (int i=0; i!=4; i++) {
+                id = Integer.toString(i);
+                data = Integer.toString(i);
+                try {
+                    emitter.send(eventBuilder.id(id).data(data));
+                    TimeUnit.SECONDS.sleep(1);
+//                int i = (int) (Math.random() * 5);
+//                emitter.send(eventBuilder.id("2").data(WORDS[i]));
+//                TimeUnit.SECONDS.sleep(1);
+//                emitter.send(eventBuilder.id("3").data("exit"));
+//                emitter.complete();
+//                TimeUnit.SECONDS.sleep(1);
+                } catch (Exception e) {
+                    emitter.completeWithError(e);
+                }
             }
 
         });
