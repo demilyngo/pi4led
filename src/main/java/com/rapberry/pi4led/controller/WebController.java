@@ -48,6 +48,7 @@ public class WebController {
         cachedThreadPool.execute(() -> {
             System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
+                eventBuilder.id("0").data("test");
                 emitter.send(eventBuilder.id("1").data(order));
                 TimeUnit.SECONDS.sleep(1);
                 int i = (int) (Math.random() * 5);
