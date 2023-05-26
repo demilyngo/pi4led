@@ -54,6 +54,7 @@ public class WebController {
                 data = Integer.toString(i);
                 try {
                     emitter.send(eventBuilder.id(id).data(data));
+                    emitter.complete();
                     TimeUnit.SECONDS.sleep(1);
 //                int i = (int) (Math.random() * 5);
 //                emitter.send(eventBuilder.id("2").data(WORDS[i]));
