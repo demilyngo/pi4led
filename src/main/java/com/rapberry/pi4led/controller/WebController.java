@@ -49,8 +49,10 @@ public class WebController {
             System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
                 emitter.send(eventBuilder.id("1").data(order));
+                TimeUnit.SECONDS.sleep(1);
                 int i = (int) (Math.random() * 5);
                 emitter.send(eventBuilder.id("2").data(WORDS[i]));
+                TimeUnit.SECONDS.sleep(1);
                 emitter.send(eventBuilder.id("3").data("exit"));
                 TimeUnit.SECONDS.sleep(1);
             } catch (Exception e) {
