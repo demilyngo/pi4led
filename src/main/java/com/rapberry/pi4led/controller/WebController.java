@@ -51,7 +51,7 @@ public class WebController {
                 int i = (int) (Math.random() * 5);
                 emitter.send(WORDS[i]);
                 TimeUnit.SECONDS.sleep(1);
-                emitter.complete();emitter.complete();
+                emitter.complete();
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }
