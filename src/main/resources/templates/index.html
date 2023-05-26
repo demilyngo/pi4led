@@ -104,7 +104,7 @@
                     console.log('connection is established');
                 };
                 eventSource.onerror = function (error) {
-                    console.log('connection state: ' + eventSource.readyState + ', error: ' + event);
+                    console.log('connection state: ' + eventSource.readyState + ', error: ' + error);
                 };
                 eventSource.onmessage = function (event) {
                     console.log('id: ' + event.lastEventId + ', data: ' + event.data);

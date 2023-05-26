@@ -44,18 +44,19 @@ public class WebController {
     @ResponseBody
     public SseEmitter getWords(@RequestParam(value = "order", defaultValue = "0") String order) {
         SseEmitter emitter = new SseEmitter();
+        SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event();
         cachedThreadPool.execute(() -> {
             System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
-                emitter.send(order);
+                emitter.send(eventBuilder.id("1").data(order));
                 int i = (int) (Math.random() * 5);
-                emitter.send(WORDS[i]);
+                emitter.send(eventBuilder.id("2").data(WORDS[i]));
                 TimeUnit.SECONDS.sleep(1);
-                emitter.complete();
+                emitter.send(eventBuilder.id("3"));
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }
-            Thread.currentThread().interrupt();
+
         });
         return emitter;
     }
