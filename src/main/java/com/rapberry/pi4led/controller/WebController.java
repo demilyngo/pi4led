@@ -45,7 +45,7 @@ public class WebController {
     public SseEmitter getWords(@RequestParam(value = "order", defaultValue = "0") String order) {
         SseEmitter emitter = new SseEmitter();
         cachedThreadPool.execute(() -> {
-            System.out.println(Thread.currentThread().getName() + Thread.currentThread().getId() + " 2?");
+            System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
                 emitter.send(order);
                 do {
@@ -67,7 +67,7 @@ public class WebController {
     @PostMapping("/")
     public String startSorting(@RequestBody String data)  {
         cachedThreadPool.execute(() -> {
-
+            System.out.println("Post mapping " + Thread.currentThread().getId());
             Pattern pattern = Pattern.compile("[0-6]");
             Matcher matcher = pattern.matcher(data);
             String res = "";
@@ -84,7 +84,6 @@ public class WebController {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    System.out.println("qweqwedsadasdascxzz");
                 }
             }
         });
