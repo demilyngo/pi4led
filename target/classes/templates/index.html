@@ -7,6 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+    <script
+            src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+            crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="wrapper" th:each="station : ${station}">
@@ -17,7 +21,9 @@
                 <img src="../images/SurSU_logo.jpg" alt="Логотип СурГУ">
                 <p class="state" th:text="'Состояние: ' + ${station.getState().displayValue}"></p>
 
-                <form action="/" method="post" id="form">
+
+
+                <form id="form">
                     <div class="wagons">
                         <div class="firstRow">
                             <p>Вагон</p>
@@ -39,6 +45,8 @@
                             <!--                            </div>-->
                             <!--                        </div>-->
 
+
+
                             <select class="selectWagon" th:name="'wagon'">
                                 <option th:value="${wagon.getWayIndex()}" th:text="${wagon.getWhere()}"></option>
                                 <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${cities.indexOf(city)}"></option>
@@ -53,82 +61,66 @@
             <div class="rightSide">
                 <img class="map" src="../images/Screenshot_1.jpg" alt="Тут должна быть карта">
                 <div class="bottomRight" >
-                    <button type="submit" id="formButton" onclick="startSort()">Начать сортировку</button>
+                    <button id="formButton" >Начать сортировку</button>
                     <p th:text="${station.getControl().displayValue}"></p>
                 </div>
             </div>
         </div>
+        <p id="result"></p>
     </div>
-    <script >
-        if (window.EventSource == null) {
-            alert('The browser does not support Server-Sent Events');
-        } else {
-            var eventSource = new EventSource('/sse/mvc/words');
-            eventSource.onopen = function () {
-                console.log('connection is established');
-            };
-            eventSource.onerror = function (error) {
-                console.log('connection state: ' + eventSource.readyState + ', error: ' + event);
-            };
-            eventSource.onmessage = function (event) {
-                console.log('id: ' + event.lastEventId + ', data: ' + event.data);
-                //$( ".state" ).text(  event.data );
-                //document.getElementsByClassName(".map").src= event.data ;
-                $(".map").attr("src", "../images/" + event.data + ".jpg")
-
-                if (event.data.endsWith('6')) {
-                    eventSource.close();
-                    console.log('connection is closed');
-                }
-            };
-        }
-
-
-        const selectHeader = document.querySelectorAll(".select_header");
-        const selectItem = document.querySelectorAll(".select_item");
-        selectHeader.forEach(item=> {
-            item.addEventListener('click', toggleSelect);
-        })
-        selectItem.forEach(item=> {
-            item.addEventListener('click', selectChoose)
-        })
-        function toggleSelect() {
-            this.parentElement.classList.toggle("is-active");
-        }
-        function selectChoose () {
-            let text = this.innerText;
-            select = this.closest(".select");
-            currentText = select.querySelector(".select_current");
-            // currentText = this.closest(".select").querySelector(".select_current");
-            currentText.innerText = text;
-            select.classList.remove("is-active");
-        }
-
+    <script th:inline="javascript">
         function showValues() {
-            var str = $( "form" ).serialize();
+            var str = $( "form" ).serializeArray();
+            var order = "order=";
+            str.forEach(function(elem) {
+                order += elem.value;
+            });
+            console.log(order);
             $( "#result" ).text( str );
         }
         $( "select" ).on( "change", showValues );
 
-        function startSort() {
-            let str = $( "form" ).serialize();
+        $("#formButton").click(function(e) {
+            e.preventDefault();
+            var str = $( "form" ).serializeArray();
+            var order = "order=";
+            str.forEach(function(elem) {
+                order += elem.value;
+            });
             $.ajax({
-                url:'/words',
+                url: '/words',
                 dataType: 'json',
-                type: 'POST',
+                type: 'GET',
                 cache: 'false',
                 contentType: 'application/json',
-                data: {
-                    'foo': str,
-                },
-                success: function () {
-                    console.log('wow' + str);
-                }
-
             })
-        }
-        showValues();
 
+            if (window.EventSource == null) {
+                alert('The browser does not support Server-Sent Events');
+            } else {
+                var eventSource = new EventSource('/words?' + order);
+                eventSource.onopen = function () {
+                    console.log('connection is established');
+                };
+                eventSource.onerror = function (error) {
+                    console.log('connection state: ' + eventSource.readyState + ', error: ' + event);
+                };
+                eventSource.onmessage = function (event) {
+                    console.log('id: ' + event.lastEventId + ', data: ' + event.data);
+                    //$( ".state" ).text(  event.data );
+                    //document.getElementsByClassName(".map").src= event.data ;
+                    $(".map").attr("src", "../images/" + event.data + ".jpg")
+
+                    if (event.data.endsWith('6')) {
+                        eventSource.close();
+                        console.log('connection is closed');
+                    }
+                };
+            }
+
+
+        })
+        showValues();
     </script>
 </body>
 </html>

@@ -48,13 +48,11 @@ public class WebController {
             System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
                 emitter.send(order);
-                do {
-                    emitter.send("TrainCounter: " + stationController.getTrainCounter());
-//                    if (stationController.getCurrentWay() > 0)
-//                        emitter.send(WORDS[stationController.getCurrentWay() - 1]);
-                    TimeUnit.SECONDS.sleep(1);
-                } while (stationController.getTrainCounter() < 40);
-                emitter.complete();
+                int i = (int) (Math.random() * 5);
+                stationController.setTrainCounter(stationController.getTrainCounter()+1);
+                emitter.send(WORDS[i]);
+                TimeUnit.SECONDS.sleep(1);
+                emitter.complete();emitter.complete();
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }
@@ -74,18 +72,18 @@ public class WebController {
             while (matcher.find()) {
                 res = res + (data.substring(matcher.start(), matcher.end()));
             }
-            for (char way : res.toCharArray()) {
-                stationController.setCurrentWay(way);
-                try {
-                    stationController.sendMessage(256+2*way);
-                    stationController.sendMessage(320+2*way); //message to change way
-                    while(StationController.convertReceived(stationController.getReceivedMessage()) < 386) {
-                        Thread.onSpinWait();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+//            for (char way : res.toCharArray()) {
+//                stationController.setCurrentWay(way);
+//                try {
+//                    stationController.sendMessage(256+2*way);
+//                    stationController.sendMessage(320+2*way); //message to change way
+//                    while(StationController.convertReceived(stationController.getReceivedMessage()) < 386) {
+//                        Thread.onSpinWait();
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         });
 
         return "index";
