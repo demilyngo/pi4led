@@ -49,7 +49,6 @@ public class WebController {
             try {
                 emitter.send(order);
                 int i = (int) (Math.random() * 5);
-                stationController.setTrainCounter(stationController.getTrainCounter()+1);
                 emitter.send(WORDS[i]);
                 TimeUnit.SECONDS.sleep(1);
                 emitter.complete();emitter.complete();
