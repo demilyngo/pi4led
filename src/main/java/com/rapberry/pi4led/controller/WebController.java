@@ -47,12 +47,14 @@ public class WebController {
         cachedThreadPool.execute(() -> {
             System.out.println("This is SSE " + Thread.currentThread().getId());
             try {
-                emitter.send(order);
+                if (StationController.convertReceived(stationController.getReceivedMessage()) == 0) {
+                    stationController.setTrainCounter(stationController.getTrainCounter() + 1);
+                }
+                emitter.send(order + stationController.getTrainCounter());
                 int i = (int) (Math.random() * 5);
-                stationController.setTrainCounter(stationController.getTrainCounter()+1);
                 emitter.send(WORDS[i]);
                 TimeUnit.SECONDS.sleep(1);
-                emitter.complete();emitter.complete();
+                emitter.complete();
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }

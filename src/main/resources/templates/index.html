@@ -59,6 +59,7 @@
             </div>
 
             <div class="rightSide">
+                <div>Ожидают сортировку: <span id="toSortCounter"></span></div>
                 <img class="map" src="../images/Screenshot_1.jpg" alt="Тут должна быть карта">
                 <div class="bottomRight" >
                     <button id="formButton" >Начать сортировку</button>
@@ -107,8 +108,6 @@
                 };
                 eventSource.onmessage = function (event) {
                     console.log('id: ' + event.lastEventId + ', data: ' + event.data);
-                    //$( ".state" ).text(  event.data );
-                    //document.getElementsByClassName(".map").src= event.data ;
                     $(".map").attr("src", "../images/" + event.data + ".jpg")
 
                     if (event.data.endsWith('6')) {
