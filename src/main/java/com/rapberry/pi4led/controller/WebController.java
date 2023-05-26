@@ -55,6 +55,7 @@ public class WebController {
             } catch (Exception e) {
                 emitter.completeWithError(e);
             }
+            Thread.currentThread().interrupt();
         });
         return emitter;
     }
