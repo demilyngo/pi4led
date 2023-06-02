@@ -47,6 +47,7 @@ public class WebController {
         SseEmitter emitter = new SseEmitter();
         SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event();
         if(stationController.getState() != State.SORTING) { //to stop threads from multiplying
+            stationController.setState(State.SORTING);
             cachedThreadPool.execute(() -> {
                 for (char way : order.toCharArray()) {
                     stationController.setCurrentWay(way);
@@ -63,7 +64,7 @@ public class WebController {
                         e.printStackTrace();
                     }
                 }
-                stationController.setState(State.LEAVING);
+
                 try {
                     eventBuilder.id("2").data("Finished sorting").build();
                     emitter.send(eventBuilder);

@@ -84,18 +84,11 @@
         $( "select" ).on( "change", showValues );
 
         //SEND TO STARTING POSITION
-        $("$waitButton").click(function (e) {
+        $("#waitButton").click(function (e) {
             e.preventDefault();
             $(".state").text("Состояние: Прибытие");
 
-            // $.ajax({
-            //     url: '/',
-            //     dataType: 'json',
-            //     type: 'GET',
-            //     cache: 'false',
-            //     contentType: 'application/json',
-            // })
-            $("#waitButton").style.display = "none";
+            document.querySelector("#waitButton").style.display = "none";
 
             if (window.EventSource == null) {
                 alert('The browser does not support Server-Sent Events');
@@ -129,20 +122,13 @@
             $(".state").text("Состояние: Сортировка");
             var wagonList = document.querySelectorAll(".selectWagon");
             for (let el of wagonList) {el.disabled = true}
-            $("#overlay").style.display = "block";
+            document.querySelector("#overlay").style.display = "block";
 
             var str = $( "form" ).serializeArray();
             var order = "order=";
             str.forEach(function(elem) {
                 order += elem.value;
             });
-            // $.ajax({
-            //     url: '/words',
-            //     dataType: 'json',
-            //     type: 'GET',
-            //     cache: 'false',
-            //     contentType: 'application/json',
-            // })
 
             if (window.EventSource == null) {
                 alert('The browser does not support Server-Sent Events');
@@ -163,7 +149,7 @@
                         case "2":
                             $(".state").text("Состояние: Ожидание");
                             for (let el of wagonList) {el.disabled = false;}
-                            $("#overlay").style.display = "none";
+                            document.querySelector("#overlay").style.display = "none";
                             eventSource.close();
                             console.log('connection is closed');
                             break;
