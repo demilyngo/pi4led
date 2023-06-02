@@ -1,0 +1,10 @@
+<div class="wagonNumber">
+    <p th:text="${wagon.getIndex()}"/>
+</div>
+
+<select class="selectWagon" th:name="'wagon'">
+    <option th:value="${wagon.getWayIndex()}" th:text="${wagon.getWhere()}"></option>
+    <option th:each="city : ${cities}" th:if="${not (wagon.getWhere() eq city)}" th:text="${city}" th:value="${cities.indexOf(city)}"></option>
+</select>
+
+<input type="checkbox" class="type"/>

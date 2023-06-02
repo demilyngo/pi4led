@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.BitSet;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,7 +17,8 @@ import java.util.concurrent.Executors;
 enum State{
     WAITING("Ожидание"),
     SORTING("Сортировка"),
-    LEAVING("Отбытие");
+    LEAVING("Отбытие"),
+    COMING("Прибытие");
 
     private final String displayValue;
     State(String state) {
@@ -45,7 +47,7 @@ public class StationController {
 
     private Integer checkController1 = 256;
     private Integer checkController2 = 320;
-    private Integer checkController3 = 384; //////
+    private Integer checkController3 = 384;
     private Integer checkController4 = 448;
     private Integer checkControllerMessage;
 
@@ -63,31 +65,27 @@ public class StationController {
 
     private final GpioController gpioController = GpioFactory.getInstance();
 
-
     Runnable listener = () -> {
         while (!receiving && !sending) {
             try {
-
-                System.out.println("I check controllers " + Thread.currentThread().getId());
-//                System.out.println(getListenerId());
-//                checkControllerMessage = checkController1;
-//                System.out.println("I check 1");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
-//                checkControllerMessage = checkController2;
-//                System.out.println("I check 2");
-//                sendMessage(checkControllerMessage);
-//                receiveMessage();
+                checkControllerMessage = checkController1;
+                System.out.println("I check 1");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
+                checkControllerMessage = checkController2;
+                System.out.println("I check 2");
+                sendMessage(checkControllerMessage);
+                receiveMessage();
                 checkControllerMessage = checkController3;
                 System.out.println("I check 3");
                 sendMessage(checkControllerMessage);
                 receiveMessage();
-//                if(getControl() == Control.FIELD) {
-//                    System.out.println("I check 4");
-//                    checkControllerMessage = checkController4;
-//                    sendMessage(checkControllerMessage);
-//                    receiveMessage();
-//                }
+                if(getControl() == Control.FIELD) {
+                    System.out.println("I check 4");
+                    checkControllerMessage = checkController4;
+                    sendMessage(checkControllerMessage);
+                    receiveMessage();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -110,13 +108,13 @@ public class StationController {
                 System.out.println("Received: " + receivedMessage.get(i));
                 Thread.sleep(1000);
             }
-            if(receivedMessage.get(startBitLength+startBitLength+controllerLength+taskLength-1)) {
-                receivedMessage.clear();
-                receiving = false;
-                return;
-            }
+//            if(receivedMessage.get(startBitLength+startBitLength+controllerLength+taskLength-1)) { //?????? chto eto?
+//                receivedMessage.clear();
+//                receiving = false;
+//                return;
+//            }
 
-            if (receivedMessage.nextSetBit(0) == 1) {
+            if (Objects.equals(convertReceived(receivedMessage), checkControllerMessage)) { //controller is connected
                 receiving = false;
                 System.out.println("Checked successfully");
                 return;
@@ -207,9 +205,6 @@ public class StationController {
             sending = false;
             setInput();
         }
-//        if(Thread.currentThread().getId() != listenerId) {
-//            thread.start();
-//        }
     }
 
     public static Integer convertReceived(BitSet bits) {
@@ -255,17 +250,6 @@ public class StationController {
         if (pin.getMode() == PinMode.DIGITAL_INPUT) {
             pin.setMode(PinMode.DIGITAL_OUTPUT);
         }
-        System.out.println("set output");
-    }
-
-    public void setListener() {
-        setInput();
-        //gpioController.addListener(listener, pin);
-    }
-
-    public void removeListener() {
-        //gpioController.removeListener(listener, pin);
-        setOutput();
     }
 
 

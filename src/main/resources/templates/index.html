@@ -61,8 +61,9 @@
             <div class="rightSide">
                 <div>Ожидают сортировку: <span id="toSortCounter"></span></div>
                 <img class="map" src="../images/Screenshot_1.jpg" alt="Тут должна быть карта">
-                <div class="bottomRight" >
-                    <button id="formButton" >Начать сортировку</button>
+                <div class="bottomRight">
+                    <button id="startButton">Начать сортировку</button>
+                    <button id="waitButton">Ожидание</button>
                     <p th:text="${station.getControl().displayValue}"></p>
                 </div>
             </div>
@@ -70,6 +71,7 @@
         <p id="result"></p>
     </div>
     <script th:inline="javascript">
+        //ORDER OF WAGONS
         function showValues() {
             var str = $( "form" ).serializeArray();
             var order = "order=";
@@ -81,8 +83,54 @@
         }
         $( "select" ).on( "change", showValues );
 
-        $("#formButton").click(function(e) {
+        //SEND TO STARTING POSITION
+        $("$waitButton").click(function (e) {
             e.preventDefault();
+            $(".state").text("Состояние: Прибытие");
+
+            $.ajax({
+                url: '/',
+                dataType: 'json',
+                type: 'GET',
+                cache: 'false',
+                contentType: 'application/json',
+            })
+            $("#waitButton").style.display = "none";
+
+            if (window.EventSource == null) {
+                alert('The browser does not support Server-Sent Events');
+            } else {
+                var eventSource = new EventSource('/');
+                eventSource.onopen = function () {
+                    console.log('connection is established');
+                };
+                eventSource.onerror = function (error) {
+                    console.log('connection state: ' + eventSource.readyState + ', error: ' + error);
+                };
+                eventSource.onmessage = function (event) {
+                    console.log('id: ' + event.lastEventId + ', data: ' + event.data);
+                    switch (event.lastEventId ) {
+                        case "1":
+                            $("#toSortCounter").text(event.data)
+                            break;
+                        case "2":
+                            $(".state").text("Состояние: Ожидание");
+                            eventSource.close();
+                            break;
+                    }
+                };
+            }
+        })
+
+        //START SORT
+        $("#startButton").click(function(e) {
+            e.preventDefault();
+
+            $(".state").text("Состояние: Сортировка");
+            var wagonList = document.querySelectorAll(".selectWagon");
+            for (let el of wagonList) {el.disabled = true}
+            $("#overlay").style.display = "block";
+
             var str = $( "form" ).serializeArray();
             var order = "order=";
             str.forEach(function(elem) {
@@ -108,16 +156,20 @@
                 };
                 eventSource.onmessage = function (event) {
                     console.log('id: ' + event.lastEventId + ', data: ' + event.data);
-                    if(event.lastEventId === "3") {
-                        eventSource.close();
-                        console.log('connection is closed');
+                    switch (event.lastEventId) {
+                        case "1":
+                            $(".map").attr("src", "../images/" + event.data + ".jpg")
+                            break;
+                        case "2":
+                            $(".state").text("Состояние: Ожидание");
+                            for (let el of wagonList) {el.disabled = false;}
+                            $("#overlay").style.display = "none";
+                            eventSource.close();
+                            console.log('connection is closed');
+                            break;
                     }
-                    $(".map").attr("src", "../images/" + event.data + ".jpg");
                 };
-
             }
-
-
         })
         showValues();
     </script>
