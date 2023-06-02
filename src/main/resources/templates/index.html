@@ -88,19 +88,19 @@
             e.preventDefault();
             $(".state").text("Состояние: Прибытие");
 
-            $.ajax({
-                url: '/',
-                dataType: 'json',
-                type: 'GET',
-                cache: 'false',
-                contentType: 'application/json',
-            })
+            // $.ajax({
+            //     url: '/',
+            //     dataType: 'json',
+            //     type: 'GET',
+            //     cache: 'false',
+            //     contentType: 'application/json',
+            // })
             $("#waitButton").style.display = "none";
 
             if (window.EventSource == null) {
                 alert('The browser does not support Server-Sent Events');
             } else {
-                var eventSource = new EventSource('/');
+                var eventSource = new EventSource('/start');
                 eventSource.onopen = function () {
                     console.log('connection is established');
                 };
@@ -136,13 +136,13 @@
             str.forEach(function(elem) {
                 order += elem.value;
             });
-            $.ajax({
-                url: '/words',
-                dataType: 'json',
-                type: 'GET',
-                cache: 'false',
-                contentType: 'application/json',
-            })
+            // $.ajax({
+            //     url: '/words',
+            //     dataType: 'json',
+            //     type: 'GET',
+            //     cache: 'false',
+            //     contentType: 'application/json',
+            // })
 
             if (window.EventSource == null) {
                 alert('The browser does not support Server-Sent Events');

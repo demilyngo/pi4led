@@ -114,7 +114,7 @@ public class StationController {
 //                return;
 //            }
 
-            if (Objects.equals(convertReceived(receivedMessage), checkControllerMessage)) { //controller is connected
+            if (Objects.equals(convertReceived(receivedMessage), checkControllerMessage) || convertReceived(receivedMessage) == 0) { //controller is connected
                 receiving = false;
                 System.out.println("Checked successfully");
                 return;

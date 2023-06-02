@@ -77,7 +77,7 @@ public class WebController {
 
 
     @ResponseBody
-    @GetMapping("/")
+    @GetMapping("/start")
     public SseEmitter startSorting()  {
         SseEmitter emitter = new SseEmitter();
         SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event();
